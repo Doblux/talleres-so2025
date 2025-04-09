@@ -6,10 +6,16 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 
 void sigchld_handler(int sig){
     wait(NULL);
+}
+
+void sigint_handler(int sig){
+    printf("\n\t[+] Saliendo ... \n");
+    exit(EXIT_SUCCESS);
 }
 
 int calcular(const char *expresion) {
@@ -52,17 +58,19 @@ int calcular(const char *expresion) {
 
 void atender_cliente(int client_socket){
     char* formula;
+    char salir[5] = "exit";
     int mantener_comunicacion = 1;
     int tamaño;
     while (mantener_comunicacion) {
         printf("\nesperando a que manden mensajes\n");
         recv(client_socket, &tamaño, sizeof(int), 0);
         printf("tamaño: %d\n", tamaño);
-        formula = (char*)malloc(tamaño * sizeof(char));
-        recv(client_socket, &formula, tamaño * sizeof(char), 0);
+        formula = (char*)malloc((tamaño+1) * sizeof(char));
+        recv(client_socket, formula, tamaño, 0);
         printf("la fomula recibida es: %s\n", formula);
         sleep(1);
-        if (formula == "exit"){
+        if (strcmp(formula, salir) == 0){
+            printf("la comunicacion se ha cerrado\n");
             mantener_comunicacion = 0;
         } else {
             int result = calcular(formula);
@@ -92,14 +100,15 @@ int main() {
 
     server_socket = socket(AF_UNIX, SOCK_STREAM, 0);
     bind(server_socket, (struct sockaddr *) &server_addr, slen);
-    listen(server_socket, 10);
+    listen(server_socket, 1);
 
-    printf("Servidor: esperando conexion del cliente");
+    printf("Servidor: esperando conexion del cliente\n");
     signal(SIGCHLD, sigchld_handler);
+    signal(SIGINT, sigint_handler);
     while (1)
     {
         client_socket = accept(server_socket, (struct sockaddr *) &client_addr, &clen);
-        printf("esperando conectar");
+        printf("esperando conectar\n");
         if (fork() == 0){
             atender_cliente(client_socket);
         }
