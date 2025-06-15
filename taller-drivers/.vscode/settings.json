@@ -1,0 +1,5 @@
+{
+    "files.associations": {
+        "spinlock_types_raw.h": "c"
+    }
+}

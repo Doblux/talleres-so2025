@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "Linux Kernel Module",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/lib/modules/6.12.33-1-lts/build/include",
+                "/lib/modules/6.12.33-1-lts/build/arch/x86/include",
+                "/lib/modules/6.12.33-1-lts/build/arch/x86/include/generated",
+                "/lib/modules/6.12.33-1-lts/build/include/generated",
+                "/usr/include"
+            ],
+            "defines": [
+                "__KERNEL__",
+                "MODULE"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
