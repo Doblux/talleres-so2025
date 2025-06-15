@@ -15,3 +15,4 @@ testhdd.o: testhdd.cpp
 clean:
 	rm -rf *.o
 	rm -rf testhdd
+	xz -z -v hdd.raw
